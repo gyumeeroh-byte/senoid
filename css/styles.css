@@ -585,3 +585,225 @@ a {
         font-size: 2.5rem;
     }
 }
+
+/* ==========================================================================
+   Background Music & Premium Intro Experience
+   ========================================================================== */
+
+/* Premium Intro Overlay */
+.intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #0f0f0f 0%, #050505 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.2s ease;
+    opacity: 1;
+    visibility: visible;
+}
+
+.intro-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.intro-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 2rem;
+    animation: introFadeIn 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.intro-subtitle {
+    font-size: 1.1rem;
+    letter-spacing: 6px;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    font-family: 'Outfit', sans-serif;
+}
+
+.intro-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    font-family: 'Cinzel', serif;
+    background: linear-gradient(135deg, #ffffff 30%, #a1a1a6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.intro-desc {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    line-height: 1.8;
+}
+
+.intro-btn {
+    background: transparent;
+    border: 1px solid rgba(230, 185, 64, 0.6);
+    color: #ffffff;
+    padding: 1.1rem 2.8rem;
+    font-size: 1rem;
+    border-radius: 40px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 0 20px rgba(230, 185, 64, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.intro-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(230, 185, 64, 0.2) 0%, transparent 60%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.6s ease;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.intro-btn:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.intro-btn:hover {
+    color: #000;
+    background: var(--gold-main);
+    border-color: var(--gold-light);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(230, 185, 64, 0.4);
+    font-weight: 700;
+}
+
+/* Floating Sound Toggle Button */
+.floating-sound-btn {
+    position: fixed;
+    bottom: 40px;
+    left: 40px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 0.9rem 1.6rem;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+}
+
+.floating-sound-btn:hover {
+    transform: translateY(-5px);
+    border-color: rgba(230, 185, 64, 0.5);
+    box-shadow: 0 12px 28px rgba(230, 185, 64, 0.3);
+    color: var(--gold-light);
+}
+
+/* Sound Wave bars animation */
+.sound-wave {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    width: 20px;
+    height: 18px;
+}
+
+.sound-wave .bar {
+    display: block;
+    width: 2.5px;
+    height: 3px;
+    background-color: var(--gold-main);
+    border-radius: 2px;
+    transition: height 0.2s ease, background-color 0.3s ease;
+}
+
+.floating-sound-btn:hover .sound-wave .bar {
+    background-color: var(--gold-light);
+}
+
+/* When playing, animate bars at different intervals */
+.floating-sound-btn.playing .bar:nth-child(1) {
+    animation: soundWave1 1.2s ease-in-out infinite alternate;
+}
+.floating-sound-btn.playing .bar:nth-child(2) {
+    animation: soundWave2 0.8s ease-in-out infinite alternate 0.15s;
+}
+.floating-sound-btn.playing .bar:nth-child(3) {
+    animation: soundWave3 1.0s ease-in-out infinite alternate 0.3s;
+}
+.floating-sound-btn.playing .bar:nth-child(4) {
+    animation: soundWave4 0.9s ease-in-out infinite alternate 0.05s;
+}
+
+@keyframes soundWave1 {
+    0% { height: 4px; }
+    100% { height: 16px; }
+}
+@keyframes soundWave2 {
+    0% { height: 3px; }
+    100% { height: 18px; }
+}
+@keyframes soundWave3 {
+    0% { height: 5px; }
+    100% { height: 14px; }
+}
+@keyframes soundWave4 {
+    0% { height: 2px; }
+    100% { height: 17px; }
+}
+
+@keyframes introFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustment for floating button */
+@media (max-width: 768px) {
+    .floating-sound-btn {
+        bottom: 25px;
+        left: 20px;
+        padding: 0.75rem 1.2rem;
+        font-size: 0.8rem;
+        gap: 8px;
+    }
+    .floating-inquiry-btn {
+        bottom: 25px;
+        right: 20px;
+        padding: 0.75rem 1.2rem;
+        font-size: 0.8rem;
+    }
+    .intro-title {
+        font-size: 2.2rem;
+    }
+}

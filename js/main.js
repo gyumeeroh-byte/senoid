@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Gold Particle Effect on Canvas
     initParticles();
     
-    // 5. Typewriter Effect
-    initTypewriter();
+    // 5. BGM & Premium Intro Overlay Integration
+    initBgmAndIntro();
 });
 
 function initTypewriter() {
@@ -290,4 +290,86 @@ function initParticles() {
     
     createParticles();
     animate();
+}
+
+function initBgmAndIntro() {
+    const introOverlay = document.getElementById('introOverlay');
+    const enterBtn = document.getElementById('enterBtn');
+    const bgmAudio = document.getElementById('bgmAudio');
+    const soundToggle = document.getElementById('soundToggle');
+    const soundText = soundToggle ? soundToggle.querySelector('.sound-text') : null;
+    
+    if (!introOverlay || !enterBtn || !bgmAudio || !soundToggle) return;
+
+    let isPlaying = false;
+
+    // Helper to start playback
+    async function playAudio() {
+        try {
+            await bgmAudio.play();
+            isPlaying = true;
+            soundToggle.classList.add('playing');
+            if (soundText) soundText.textContent = "SOUND ON";
+        } catch (err) {
+            console.log("Audio play failed, user interaction might be required: ", err);
+            isPlaying = false;
+            soundToggle.classList.remove('playing');
+            if (soundText) soundText.textContent = "SOUND OFF";
+        }
+    }
+
+    // Helper to pause playback
+    function pauseAudio() {
+        bgmAudio.pause();
+        isPlaying = false;
+        soundToggle.classList.remove('playing');
+        if (soundText) soundText.textContent = "SOUND OFF";
+    }
+
+    // 1. Enter Experience Button Handler
+    enterBtn.addEventListener('click', () => {
+        // Start playing music
+        playAudio();
+        
+        // Cinematic fade-out of overlay
+        introOverlay.classList.add('fade-out');
+        
+        // Remove overlay from DOM after animation completes (1.2s)
+        setTimeout(() => {
+            introOverlay.remove();
+        }, 1200);
+
+        // DELAYED TRIGGER: Start the typewriter effect only when entering
+        // This ensures the user witnesses the typewriter effect dynamically
+        setTimeout(() => {
+            initTypewriter();
+        }, 800);
+    });
+
+    // 2. Sound Toggle Button Handler
+    soundToggle.addEventListener('click', () => {
+        if (isPlaying) {
+            pauseAudio();
+        } else {
+            playAudio();
+        }
+    });
+
+    // 3. Smart Visibility API Handler
+    // When tab loses focus, pause music. When focus returns, resume music (if it was playing).
+    let wasPlayingBeforeHidden = false;
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (isPlaying) {
+                wasPlayingBeforeHidden = true;
+                pauseAudio();
+            } else {
+                wasPlayingBeforeHidden = false;
+            }
+        } else {
+            if (wasPlayingBeforeHidden) {
+                playAudio();
+            }
+        }
+    });
 }
